@@ -29,7 +29,9 @@ Para este trabajo se usará una versión modificada de esta base de datos donde 
 
 - ¿Quién podría estar interesado en este análisis?
 
- 
+   Los usuarios que pueden estar interesados en este análisis son dos:
+  - Los gerentes de hoteles, los cuales podrán observar el número de clientes que lleguen a tener estos a comparación de los suyos.
+  - Usuarios que estén creando una página web que promocione hoteles, los cuales podrán determinar que hoteles son los que tienen más clientes y; a partir de eso, promocionarlos en la página para que más familias vayan ahí. 
 
 
 - ¿Qué problemas o necesidades responde este análisis
