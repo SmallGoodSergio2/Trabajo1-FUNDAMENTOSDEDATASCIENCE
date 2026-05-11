@@ -38,6 +38,20 @@ Para este trabajo se usará una versión modificada de esta base de datos donde 
 
 
 
+### **2. CONJUNTO DE DATOS(DATASET)**
+
+#### Descripción del dataset
+
+
+
+
+
+
+
+
+
+
+
 
 
 
