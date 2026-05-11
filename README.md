@@ -103,131 +103,131 @@ View(df)
 
 #### Tipo de datos de cada variable:
 
-**hotel**
+**hotel**: Tipo de hotel
 
 'character'
 
-**is_canceled**
+**is_canceled**: Verificar si la reserva fue cancelada(0 = no fue cancelado, 1 = si fue cancelado).
 
 'integer'
 
-**lead_time**
+**lead_time**: Número de días que pasó entre le fecha de llegada y la fecha en que empezaba su estadía del hotel.
 
 'integer'
 
-**arrival_date_year**
+**arrival_date_year**:  Año que se tiene previsto para ir al hotel.
 
 'integer'
 
-**arrival_date_month**
+**arrival_date_month** : Mes que se tiene previsto para ir al hotel.
 
 'character'
 
-**arrival_date_week_number**
+**arrival_date_week_number**: Semana que se tiene previsto para ir al hotel.
 
 'integer'
 
-**arrival_date_day_of_month**
+**arrival_date_day_of_month**: Día del mes que se tiene previsto para ir al hotel.
 
 'integer'
 
-**stays_in_weekend_nights**
+**stays_in_weekend_nights**: Número de noches que se quedó en un fin de semana.
 
 'integer'
 
-**stays_in_week_nights**
+**stays_in_week_nights**: Número de noches que se quedó en días de semana.
 
 'integer'
 
-**adults**
+**adults**: Número de adultos que fueron al hotel por reserva.
 
 'integer'
 
-**children**
+**children**: Número de niños que fueron al hotel por reserva.
 
 'integer'
 
-**babies**
+**babies**: Número de bebes que fueron al hotel por reserva.
 
 'integer'
 
-**meal**
+**meal**:  Tipo de comida que se reservó.
 
 'character'
 
-**country**
+**country**: País de origen de la persona que reservó
 
 'character'
 
-**market_segment**
+**market_segment**: Tipo de cliente que está haciendo la reserva. (Corporativo, directo, online TA, etc)
 
 'character'
 
-**distribution_channel**
+**distribution_channel**: La distribución en la que se hizo la reserva.
 
 'character'
 
-**is_repeated_guest**
+**is_repeated_guest**: Verificar si no es la primera vez que se recibe el mismo cliente. (0 = no es un cliente repetido, 1 = si es un cliente repetido)
 
 'integer'
 
-**previous_cancellations**
+**previous_cancellations**: Número de reservas que el cliente haya cancelado anteriormente.
 
 'integer'
 
-**previous_bookings_not_canceled**
+**previous_bookings_not_canceled**: Número de reservas que el cliente no haya cancelado anteriormente.
 
 'integer'
 
-**reserved_room_type**
+**reserved_room_type**: Tipo de habitación que el cliente reservó
 
 'character'
 
-**assigned_room_type**
+**assigned_room_type**: Tipo de habitación que se le asignó al cliente.
 
 'character'
 
-**booking_changes**
+**booking_changes**: Número de cambios que se hizo a la reserva una vez que fue registrada.
 
 'integer'
 
-**deposit_type**
+**deposit_type**: Tipo de depósito que hizo el cliente para la reserva. (No deposit = El cliente no depositó nada, Non refund = El cliente depositó el monto total de lo que cuesta la reserva, Refundable = El cliente depositó una parte del total de la reserva)
 
 'character'
 
-**agent**
+**agent** : ID de la agencia de viaje que hizo la reserva.
 
 'character'
 
-**company**
+**company**: ID de la compañía o entidad que hizo la reserva.
 
 'character'
 
-**days_in_waiting_list**
+**days_in_waiting_list**:  Número de días en donde la reserva estaba en "espera" antes de ser confirmada por el cliente.
 
 'integer'
 
-**customer_type**
+**customer_type**: El tipo de reserva que se ha hecho(Contract, Group, Transient, Transient-Party)
 
 'character'
 
-**adr**
+**adr**: Precio promedio en el que un cliente paga por habitación.
 
 'numeric'
 
-**required_car_parking_spaces**
+**required_car_parking_spaces**: Número de espacios para el estacionamiento que ha pedido el cliente.
 
 'integer'
 
-**total_of_special_requests**
+**total_of_special_requests**: Número de pedidos especiales que ha hecho el cliente.
 
 'integer'
 
-**reservation_status**
+**reservation_status**: El estatus de la reserva de cliente(Canceled, Check-Out, No-Show).
 
 'character'
 
-**reservation_status_date**
+**reservation_status_date**: Fecha en la que se hizo el último cambio al status de la reserva.
 
 'character'
 
