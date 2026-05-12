@@ -40,6 +40,7 @@ Este análisis responde problemas o necesidades como:
 - Cuando se realizan más reservas.
 - Que tipo de hotel recibe más clientes.
 - Cuáles son los patrones de ocupación, etc.
+- Cuáles son los ADR de cada reserva.
 
 ### **2. CONJUNTO DE DATOS(DATASET)**
 
@@ -56,7 +57,7 @@ sapply(df) # Ver el tipo de cada variable
 
 ```
 
-```md
+
 | Variable | Tipo | Descripción |
 |---|---|---|
 | hotel | character | Tipo de hotel reservado |
@@ -91,7 +92,7 @@ sapply(df) # Ver el tipo de cada variable
 | total_of_special_requests | integer | Número total de solicitudes especiales |
 | reservation_status | character | Estado final de la reserva |
 | reservation_status_date | character | Fecha del estado final de la reserva |
-```
+
 
 
 
@@ -216,68 +217,342 @@ Respecto a la información que nos brinda este dataset, ninguna variable puede t
 
 
 ```r
-#Buscar valores duplicados
 
+# Verificar duplicados
+cat("Número de filas duplicadas:", sum(duplicated(datos)), "\n")
 
-duplicated(df)
+Número de filas duplicadas: 31994
 
-sum(duplicated(df))
+# Eliminar duplicados si existen
 
-[1] 31994
+datos <- datos[!duplicated(datos), ]
 
-df[duplicated(df),]
-
-# A tibble: 31,994 × 35
-   hotel        is_canceled lead_time arrival_date_year arrival_date_month arrival_date_week_number
-   <fct>              <dbl>     <dbl>             <dbl> <chr>                                 <dbl>
- 1 Resort Hotel           0        14              2015 July                                     27
- 2 Resort Hotel           0        72              2015 July                                     27
- 3 Resort Hotel           0        70              2015 July                                     27
- 4 Resort Hotel           1         5              2015 July                                     28
- 5 Resort Hotel           0         0              2015 July                                     28
- 6 Resort Hotel           1         1              2015 July                                     28
- 7 Resort Hotel           0        91              2015 July                                     28
- 8 Resort Hotel           0        30              2015 July                                     28
- 9 Resort Hotel           0        98              2015 July                                     29
-10 Resort Hotel           0        40              2015 July                                     29
-# ℹ 31,984 more rows
-
+Número de filas duplicadas: 0
 
 
 ```
 
 
-Sin embargo, para optimizar el uso de memoria que hace el dataset, se cambiará todos las variables tipo "caracter" a "factor" esto permitirá a que los datos puedan ser representados en gráficos estadísticos.
+Para optimizar el uso de memoria que hace el dataset, se cambiará todos las variables tipo "caracter" a "factor" esto permitirá a que los datos puedan ser representados en gráficos estadísticos.
+
+
+```r
+# Antes de convertir a factor, reemplazar cadenas vacías y "NULL" por NA
+datos[datos == "" | datos == "NULL"] <- NA
+
+
+# Cambiando tipos de algunas variables
+
+# Crear columna de fecha de llegada combinando año, mes y día
+# Convertir nombres de meses en inglés a número
+meses <- c("January"=1, "February"=2, "March"=3, "April"=4, "May"=5, "June"=6,
+           "July"=7, "August"=8, "September"=9, "October"=10, "November"=11, "December"=12)
+datos$mes_num <- meses[datos$arrival_date_month]
+
+# Crear fecha de llegada como Date
+datos$fecha_llegada <- as.Date(paste(datos$arrival_date_year,
+                                     datos$mes_num,
+                                     datos$arrival_date_day_of_month, sep="-"),
+                               format="%Y-%m-%d")
+
+# Crear fecha de reserva (fecha_llegada - lead_time)
+datos$fecha_reserva <- datos$fecha_llegada - datos$lead_time
+
+# Crear columna de mes de llegada como factor ordenado
+datos$mes_llegada <- factor(datos$arrival_date_month,
+                            levels = c("January","February","March","April","May","June",
+                                       "July","August","September","October","November","December"))
+
+# Crear columna de año-mes para análisis temporal
+datos$anio_mes <- format(datos$fecha_llegada, "%Y-%m")
+
+# Convertir variables categóricas a factor
+datos$hotel <- as.factor(datos$hotel)
+datos$is_canceled <- as.factor(datos$is_canceled)
+datos$meal <- as.factor(datos$meal)
+datos$country <- as.factor(datos$country)
+datos$market_segment <- as.factor(datos$market_segment)
+datos$distribution_channel <- as.factor(datos$distribution_channel)
+datos$reserved_room_type <- as.factor(datos$reserved_room_type)
+datos$assigned_room_type <- as.factor(datos$assigned_room_type)
+datos$deposit_type <- as.factor(datos$deposit_type)
+datos$customer_type <- as.factor(datos$customer_type)
+datos$reservation_status <- as.factor(datos$reservation_status)
+
+# Calcular estancia total (fin de semana + entre semana)
+datos$estancia_total <- datos$stays_in_weekend_nights + datos$stays_in_week_nights
+
+
+```
+
+
+#### Resumir estadísticas básicas
+
+Ya con los datos cambiados y modificados conseguimos lo siguiente:
+
+```r
+
+# --- Resumir Estadísticas Básicas ---
+summary(datos)
+
+hotel       is_canceled   lead_time      arrival_date_year arrival_date_month
+ City Hotel  :53428   0:63371     Min.   :  0.00   Min.   :2015      Length:87396      
+ Resort Hotel:33968   1:24025     1st Qu.: 11.00   1st Qu.:2016      Class :character  
+                                  Median : 49.00   Median :2016      Mode  :character  
+                                  Mean   : 79.89   Mean   :2016                        
+                                  3rd Qu.:125.00   3rd Qu.:2017                        
+                                  Max.   :737.00   Max.   :2017                        
+                                                                                       
+ arrival_date_week_number arrival_date_day_of_month stays_in_weekend_nights stays_in_week_nights
+ Min.   : 1.00            Min.   : 1.00             Min.   : 0.000          Min.   : 0.000      
+ 1st Qu.:16.00            1st Qu.: 8.00             1st Qu.: 0.000          1st Qu.: 1.000      
+ Median :27.00            Median :16.00             Median : 1.000          Median : 2.000      
+ Mean   :26.84            Mean   :15.82             Mean   : 1.005          Mean   : 2.625      
+ 3rd Qu.:37.00            3rd Qu.:23.00             3rd Qu.: 2.000          3rd Qu.: 4.000      
+ Max.   :53.00            Max.   :31.00             Max.   :19.000          Max.   :50.000      
+                                                                                                
+     adults          children           babies                meal          country     
+ Min.   : 0.000   Min.   : 0.0000   Min.   : 0.00000   BB       :67978   PRT    :27453  
+ 1st Qu.: 2.000   1st Qu.: 0.0000   1st Qu.: 0.00000   FB       :  360   GBR    :10433  
+ Median : 2.000   Median : 0.0000   Median : 0.00000   HB       : 9085   FRA    : 8837  
+ Mean   : 1.876   Mean   : 0.1386   Mean   : 0.01082   SC       : 9481   ESP    : 7252  
+ 3rd Qu.: 2.000   3rd Qu.: 0.0000   3rd Qu.: 0.00000   Undefined:  492   DEU    : 5387  
+ Max.   :55.000   Max.   :10.0000   Max.   :10.00000                     (Other):27582  
+                  NA's   :4                                              NA's   :  452  
+       market_segment  distribution_channel is_repeated_guest previous_cancellations
+ Online TA    :51618   Corporate: 5081      Min.   :0.00000   Min.   : 0.00000      
+ Offline TA/TO:13889   Direct   :12988      1st Qu.:0.00000   1st Qu.: 0.00000      
+ Direct       :11804   GDS      :  181      Median :0.00000   Median : 0.00000      
+ Groups       : 4942   TA/TO    :69141      Mean   :0.03908   Mean   : 0.03041      
+ Corporate    : 4212   Undefined:    5      3rd Qu.:0.00000   3rd Qu.: 0.00000      
+ Complementary:  702                        Max.   :1.00000   Max.   :26.00000      
+ (Other)      :  229                                                                
+ previous_bookings_not_canceled reserved_room_type assigned_room_type booking_changes  
+ Min.   : 0.000                 A      :56552      A      :46313      Min.   : 0.0000  
+ 1st Qu.: 0.000                 D      :17398      D      :22432      1st Qu.: 0.0000  
+ Median : 0.000                 E      : 6049      E      : 7195      Median : 0.0000  
+ Mean   : 0.184                 F      : 2823      F      : 3627      Mean   : 0.2716  
+ 3rd Qu.: 0.000                 G      : 2052      G      : 2498      3rd Qu.: 0.0000  
+ Max.   :72.000                 B      :  999      C      : 2165      Max.   :21.0000  
+                                (Other): 1523      (Other): 3166                       
+     deposit_type      agent             company          days_in_waiting_list
+ No Deposit:86251   Length:87396       Length:87396       Min.   :  0.0000    
+ Non Refund: 1038   Class :character   Class :character   1st Qu.:  0.0000    
+ Refundable:  107   Mode  :character   Mode  :character   Median :  0.0000    
+                                                          Mean   :  0.7496    
+                                                          3rd Qu.:  0.0000    
+                                                          Max.   :391.0000    
+                                                                              
+         customer_type        adr          required_car_parking_spaces total_of_special_requests
+ Contract       : 3139   Min.   :  -6.38   Min.   :0.00000             Min.   :0.0000           
+ Group          :  544   1st Qu.:  72.00   1st Qu.:0.00000             1st Qu.:0.0000           
+ Transient      :71986   Median :  98.10   Median :0.00000             Median :0.0000           
+ Transient-Party:11727   Mean   : 106.34   Mean   :0.08423             Mean   :0.6986           
+                         3rd Qu.: 134.00   3rd Qu.:0.00000             3rd Qu.:1.0000           
+                         Max.   :5400.00   Max.   :8.00000             Max.   :5.0000           
+                                                                                                
+ reservation_status reservation_status_date    mes_num       fecha_llegada       
+ Canceled :23011    Length:87396            Min.   : 1.000   Min.   :2015-07-01  
+ Check-Out:63371    Class :character        1st Qu.: 4.000   1st Qu.:2016-04-01  
+ No-Show  : 1014    Mode  :character        Median : 7.000   Median :2016-09-20  
+                                            Mean   : 6.476   Mean   :2016-09-15  
+                                            3rd Qu.: 9.000   3rd Qu.:2017-04-01  
+                                            Max.   :12.000   Max.   :2017-08-31  
+                                                                                 
+ fecha_reserva         mes_llegada      anio_mes         estancia_total  
+ Min.   :2013-06-24   August :11257   Length:87396       Min.   : 0.000  
+ 1st Qu.:2016-01-19   July   :10057   Class :character   1st Qu.: 2.000  
+ Median :2016-07-01   May    : 8355   Mode  :character   Median : 3.000  
+ Mean   :2016-06-27   April  : 7908                      Mean   : 3.631  
+ 3rd Qu.:2017-01-07   June   : 7765                      3rd Qu.: 5.000  
+ Max.   :2017-08-31   March  : 7513                      Max.   :69.000  
+                      (Other):34541                                      
+
+
+# Estadísticas específicas para variables numéricas clave
+numeric_vars <- c("lead_time", "stays_in_weekend_nights", "stays_in_week_nights",
+                  "adults", "children", "babies", "adr", "estancia_total")
+summary(datos[, numeric_vars])
+
+lead_time      stays_in_weekend_nights stays_in_week_nights     adults          children      
+ Min.   :  0.00   Min.   : 0.000          Min.   : 0.000       Min.   : 0.000   Min.   : 0.0000  
+ 1st Qu.: 11.00   1st Qu.: 0.000          1st Qu.: 1.000       1st Qu.: 2.000   1st Qu.: 0.0000  
+ Median : 49.00   Median : 1.000          Median : 2.000       Median : 2.000   Median : 0.0000  
+ Mean   : 79.89   Mean   : 1.005          Mean   : 2.625       Mean   : 1.876   Mean   : 0.1386  
+ 3rd Qu.:125.00   3rd Qu.: 2.000          3rd Qu.: 4.000       3rd Qu.: 2.000   3rd Qu.: 0.0000  
+ Max.   :737.00   Max.   :19.000          Max.   :50.000       Max.   :55.000   Max.   :10.0000  
+                                                                                NA's   :4        
+     babies              adr          estancia_total  
+ Min.   : 0.00000   Min.   :  -6.38   Min.   : 0.000  
+ 1st Qu.: 0.00000   1st Qu.:  72.00   1st Qu.: 2.000  
+ Median : 0.00000   Median :  98.10   Median : 3.000  
+ Mean   : 0.01082   Mean   : 106.34   Mean   : 3.631  
+ 3rd Qu.: 0.00000   3rd Qu.: 134.00   3rd Qu.: 5.000  
+ Max.   :10.00000   Max.   :5400.00   Max.   :69.000
+
+```
+
+
+#### Identificación de datos faltantes
 
 
 ```r
 
-# Cambiando tipos de algunas variables
+# children: asumimos que NA significa sin niños (0)
+datos$children[is.na(datos$children)] <- 0
 
+# agent y company: tienen muchos NA, se mantienen como están (no se usarán en análisis principales)
+# Para variables numéricas con pocos NA se podría usar la mediana, pero aquí no profundizamos.
 
-df$reservation_status_date<- as.Date(
-  df$reservation_status_date,
-  format = "%Y-%m-%d"
-) # Primero convertimos en tipo Date a los valores que están en "reservation_status_date"
-
-df$reservation_status_date<- mdy(df$reservation_status_date) # Luego lo pasamos a un formato más adecuado de mes,día,año
-df$country <- as.factor(df$country)
-df$meal <- as.factor(df$meal)
-df$market_segment <- as.factor(df$market_segment)
-df$hotel <- as.factor(df$hotel)
-df$country <- as.factor(df$country)
-df$reserved_room_type <- as.factor(df$reserved_room_type)
-df$assigned_room_type <- as.factor(df$assigned_room_type)
-df$agent <- as.factor(df$agent)
-df$company <- as.factor(df$company)
-df$customer_type <- as.factor(df$customer_type)
-df$reservation_status <- as.factor(df$reservation_status)
-df$distribution_channel <- as.factor(df$distribution_channel)
-df$arrival_date_month <- as.factor(df$arrival_date_month)
 
 ```
 
+#### Detectar outliers
+
+```r
+
+# Boxplot de lead_time
+boxplot(datos$lead_time, main="Lead Time", ylab="Días")
+
+
+```
+![Boxplot Lead Time](boxplotLeadTime.png "BoxplotLead")
+```
+# Boxplot de adr (Average Daily Rate)
+boxplot(datos$adr, main="ADR (Tarifa Diaria Promedio)", ylab="ADR")
+
+
+```
+![Boxplot ADR](AverageDailyRateBoxplot.png "BOXPLOTADR")
+
+
+
+```
+# Boxplot de estancia_total
+boxplot(datos$estancia_total, main="Estancia Total (noches)", ylab="Noches")
+
+
+```
+![Boxplot EstanciaTotal](Estancia_totalboxplot.png "EstanciaTotalBoxplot")
+
+```
+
+#### Tratamientos de Outliers
+
+
+# --- Tratamiento de Outliers (Winsorización al percentil 1 y 99) ---
+
+winsorize <- function(x, probs = c(0.01, 0.99)) {
+  lim <- quantile(x, probs = probs, na.rm = TRUE)
+  x[x < lim[1]] <- lim[1]
+  x[x > lim[2]] <- lim[2]
+  return(x)
+}
+
+datos$lead_time_w <- winsorize(datos$lead_time)
+datos$adr_w <- winsorize(datos$adr)
+datos$estancia_w <- winsorize(datos$estancia_total)
+
+
+# --- Tratamiento manual ---
+
+# Como queremos tratar a 2 como un valor razonable, truncamos a 2 manualmente
+datos$parking_w <- pmin(datos$required_car_parking_spaces, 2)
+
+
+
+```
+
+#### Visualización de datos corregidos
+
+```
+
+# Boxplot de lead_time_w
+boxplot(datos$lead_time_w, main="Lead Time", ylab="Días")
+
+```
+![Boxplot Lead Time](boxplotLeadTime_modificado.png "BoxplotLead_modificado")
+
+```
+# Boxplot de adr_w (Average Daily Rate)
+boxplot(datos$adr_w, main="ADR (Tarifa Diaria Promedio)", ylab="ADR")
+
+
+```
+![Boxplot ADR](AverageDailyRateBoxplot_modificado.png "BOXPLOTADR_modificado")
+
+```
+# Boxplot de estancia_w
+boxplot(datos$estancia_w, main="Estancia Total (noches)", ylab="Noches")
+
+```
+
+![Boxplot EstanciaTotal](Estancia_totalboxplot_modificado.png "EstanciaTotalBoxplot_modificado")
+
+
+
+
+#### Visualización de datos(Según preguntas)
+
+
+
+
 ### **4. CONCLUSIONES**
+
+
+
+#### Nuevo set de variables después de realizar los cambios correspondientes
+
+| Variable | Tipo | Descripción |
+|---|---|---|
+| hotel | Factor (Categórica) | Tipo de hotel (Resort Hotel o City Hotel) |
+| is_canceled | Factor binario | Indica si la reserva fue cancelada (1) o no (0) |
+| lead_time | Integer | Número de días entre la reserva y la llegada |
+| arrival_date_year | Integer | Año de llegada |
+| arrival_date_month | Character | Mes de llegada |
+| arrival_date_week_number | Integer | Semana del año de llegada |
+| arrival_date_day_of_month | Integer | Día del mes de llegada |
+| stays_in_weekend_nights | Integer | Número de noches de fin de semana |
+| stays_in_week_nights | Integer | Número de noches entre semana |
+| adults | Integer | Número de adultos |
+| children | Integer | Número de niños |
+| babies | Integer | Número de bebés |
+| meal | Factor (Categórica) | Tipo de comida contratada |
+| country | Factor (Categórica) | País de origen del cliente |
+| market_segment | Factor (Categórica) | Segmento de mercado |
+| distribution_channel | Factor (Categórica) | Canal de distribución |
+| is_repeated_guest | Integer | Indica si el huésped es recurrente |
+| previous_cancellations | Integer | Número de cancelaciones previas |
+| previous_bookings_not_canceled | Integer | Número de reservas previas no canceladas |
+| reserved_room_type | Factor (Categórica) | Tipo de habitación reservada |
+| assigned_room_type | Factor (Categórica) | Tipo de habitación asignada |
+| booking_changes | Integer | Número de cambios realizados en la reserva |
+| deposit_type | Factor (Categórica) | Tipo de depósito realizado |
+| agent | Character | Identificador de agencia de viajes |
+| company | Character | Identificador de empresa |
+| days_in_waiting_list | Integer | Días en lista de espera |
+| customer_type | Factor (Categórica) | Tipo de cliente |
+| adr | Numeric | Tarifa diaria promedio (Average Daily Rate) |
+| required_car_parking_spaces | Integer | Espacios de estacionamiento requeridos |
+| total_of_special_requests | Integer | Número de solicitudes especiales |
+| reservation_status | Factor (Categórica) | Estado final de la reserva |
+| reservation_status_date | Character | Fecha del último estado de reserva |
+| mes_num | Numeric | Número correspondiente al mes de llegada |
+| fecha_llegada | Date | Fecha completa de llegada |
+| fecha_reserva | Date | Fecha en que se realizó la reserva |
+| mes_llegada | Factor ordenado | Mes de llegada ordenado cronológicamente |
+| anio_mes | Character | Año y mes de llegada en formato YYYY-MM |
+| estancia_total | Numeric | Total de noches de estancia |
+| lead_time_w | Numeric | Lead time corregido mediante winsorización |
+| adr_w | Numeric | ADR corregido mediante winsorización |
+| estancia_w | Numeric | Estancia total corregida mediante winsorización |
+| parking_w | Numeric | Espacios de estacionamiento truncados a máximo 2 |
+| tipo_huesped | Character | Clasificación de la reserva según incluya niños/bebés |
+| parking_label | Factor (Categórica) | Etiqueta categórica de espacios de estacionamiento |
+
+
+
+
 
 
 **¿Qué patrones o tendencias se observaron?**
