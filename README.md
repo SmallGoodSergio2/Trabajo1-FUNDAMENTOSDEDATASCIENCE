@@ -496,23 +496,22 @@ boxplot(datos$estancia_w, main="Estancia Total (noches)", ylab="Noches")
 
 - ¿Cuántas reservas se realizan por tipo de hotel considerando solo aquellas no
 canceladas? ¿Qué tipo de hotel es el más preferido?
-```
-
+``` r
 reservas_no_canceladas <- subset(datos, is_canceled == 0)
 
 # Gráfico de barras
-ggplot(reservas_no_canceladas, aes(x = hotel, fill = hotel)) +
+g1 <- ggplot(reservas_no_canceladas, aes(x = hotel, fill = hotel)) +
   geom_bar() +
   geom_text(stat = "count", aes(label = after_stat(count)), vjust = -0.5) +
   labs(title = "Reservas no canceladas por tipo de hotel",
        x = "Tipo de Hotel", y = "Número de Reservas") +
   theme_minimal() +
-  scale_fill_manual(values = c("Resort Hotel" = "steelblue", "City Hotel" = "coral"))
+  scale_fill_manual(values = c("Resort Hotel" = "steelblue",
+                               "City Hotel" = "coral"))
+g1
 
-# Hallazgo: El City Hotel es el más preferido (mayor número de reservas no canceladas).
-
-
-
+# Hallazgo: El City Hotel es el más preferido
+# (mayor número de reservas no canceladas).
 ```
 
 ![Grafico pregunta1](Grafica_Pregunta_1.png "Pregunta1")
@@ -520,42 +519,35 @@ ggplot(reservas_no_canceladas, aes(x = hotel, fill = hotel)) +
 
 - ¿Está aumentando la demanda con el tiempo?
   
-```
+``` r
 # Agrupar reservas totales por mes (canceladas + no canceladas)
 demanda_mensual <- datos %>%
   group_by(anio_mes) %>%
   summarise(total_reservas = n(), .groups = "drop") %>%
   mutate(fecha = as.Date(paste0(anio_mes, "-01")))
 
-ggplot(demanda_mensual, aes(x = fecha, y = total_reservas)) +
+g2 <- ggplot(demanda_mensual, aes(x = fecha, y = total_reservas)) +
   geom_line(color = "steelblue", linewidth = 1) +
   geom_smooth(method = "loess", color = "red", se = FALSE) +
   labs(title = "Evolución de la demanda de reservas",
        subtitle = "Julio 2015 - Agosto 2017",
        x = "Fecha", y = "Número de Reservas") +
   theme_minimal()
+g2
 
-# Hallazgo: Se observa una tendencia ligeramente creciente, con picos en verano.
-
+# Hallazgo: Se observa una tendencia ligeramente creciente,
+# con una baja alrededor de inicios del año 2017
 ```
 
 ![Grafico pregunta2](Grafica_Pregunta_2.png "Pregunta2")
 
 
 - ¿Cuáles son las temporadas de reservas (alta, media, baja)?
-```
-
+``` r
 # Agrupar por mes (sumando todos los años)
 demanda_por_mes <- datos %>%
   group_by(mes_llegada) %>%
   summarise(total_reservas = n(), .groups = "drop")
-
-ggplot(demanda_por_mes, aes(x = mes_llegada, y = total_reservas)) +
-  geom_bar(stat = "identity", fill = "steelblue") +
-  labs(title = "Temporadas de reservas por mes",
-       x = "Mes de llegada", y = "Total de Reservas") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 # Usamos método basado en umbrales de media ± desviación estándar para hallar
 # las temporadas de manera numérica
@@ -564,7 +556,8 @@ ggplot(demanda_por_mes, aes(x = mes_llegada, y = total_reservas)) +
 media <- mean(demanda_por_mes$total_reservas)
 desv <- sd(demanda_por_mes$total_reservas)
 
-umbral_alta <- media + 0.5 * desv
+# Usamos umbrales ajustados para visualizar temporadas contiguas
+umbral_alta <- media + 0.6 * desv
 umbral_baja <- media - 0.5 * desv
 
 # Clasificar
@@ -579,19 +572,34 @@ demanda_por_mes <- demanda_por_mes %>%
 print(demanda_por_mes)
 
 # Visualización con colores por temporada
-g3_2<-ggplot(demanda_por_mes, aes(x = mes_llegada, y = total_reservas, fill = temporada)) +
+g3 <- ggplot(demanda_por_mes, aes(x = mes_llegada,
+                                  y = total_reservas,
+                                  fill = temporada)) +
   geom_bar(stat = "identity") +
-  geom_hline(yintercept = umbral_alta, linetype = "dashed", color = "red", linewidth = 1) +
-  geom_hline(yintercept = umbral_baja, linetype = "dashed", color = "blue", linewidth = 1) +
-  annotate("text", x = 12, y = umbral_alta + 100, label = "Umbral alta", color = "red") +
-  annotate("text", x = 12, y = umbral_baja - 100, label = "Umbral baja", color = "blue") +
+  geom_hline(yintercept = umbral_alta,
+             linetype = "dashed",
+             color = "red",
+             linewidth = 1) +
+  geom_hline(yintercept = umbral_baja,
+             linetype = "dashed",
+             color = "blue",
+             linewidth = 1) +
+  annotate("text", x = 12, y = umbral_alta + 100,
+           label = "Umbral alta", color = "red") +
+  annotate("text", x = 12, y = umbral_baja - 100,
+           label = "Umbral baja", color = "blue") +
   labs(title = "Temporadas de reservas (clasificación numérica)",
        x = "Mes de llegada", y = "Total de reservas") +
-  scale_fill_manual(values = c("Alta" = "tomato", "Media" = "gold", "Baja" = "steelblue")) +
+  scale_fill_manual(values = c("Alta" = "tomato",
+                               "Media" = "gold",
+                               "Baja" = "steelblue")) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-g3_2
+g3
 
+# Hallazgo: Temporada alta: Julio, Agosto
+# Temporada baja: Noviembre-Febrero
+# Temporada media: Marzo-Junio, Septiembre, Octubre
 ```
 
 
@@ -601,25 +609,26 @@ g3_2
 
 - ¿Cuál es la duración promedio de las estancias por tipo de hotel?
 
-```
-
-
-# Calcular promedio de estancia total por hotel (datos no cancelados para estancia real)
-estancia_promedio <- aggregate(estancia_total ~ hotel, 
+``` r
+# Calcular promedio de estancia total por hotel
+# (datos no cancelados para estancia real)
+estancia_promedio <- aggregate(estancia_total ~ hotel,
                                data = reservas_no_canceladas, FUN = mean)
 
-ggplot(estancia_promedio, aes(x = hotel, y = estancia_total, fill = hotel)) +
+g4 <- ggplot(estancia_promedio,
+             aes(x = hotel, y = estancia_total, fill = hotel)) +
   geom_bar(stat = "identity") +
   geom_text(aes(label = round(estancia_total, 1)), vjust = -0.5) +
   labs(title = "Duración promedio de estancia por tipo de hotel",
        subtitle = "Solo reservas no canceladas",
        x = "Tipo de Hotel", y = "Noches promedio") +
   theme_minimal() +
-  scale_fill_manual(values = c("Resort Hotel" = "steelblue", "City Hotel" = "coral"))
+  scale_fill_manual(values = c("Resort Hotel" = "steelblue",
+                               "City Hotel" = "coral"))
+g4
 
-# Hallazgo: Resort Hotel tiene estancias más largas en promedio (~4.2 vs ~ 3.0 noches).
-
-
+# Hallazgo: Resort Hotel tiene estancias más largas en promedio
+# (~4.2 vs ~ 3.0 noches).
 ```
 
 ![Grafico pregunta4](Grafica_Pregunta_4.png "Pregunta4")
@@ -628,27 +637,21 @@ ggplot(estancia_promedio, aes(x = hotel, y = estancia_total, fill = hotel)) +
 
 - ¿Cuántas reservas incluyen niños y/o bebés?
 
-```
+```r
 # Crear variable categórica
-datos$tipo_huesped <- ifelse(datos$children > 0 | datos$babies > 0, 
+datos$tipo_huesped <- ifelse(datos$children > 0 | datos$babies > 0,
                              "Con niños/bebés", "Solo adultos")
 
-ggplot(datos, aes(x = tipo_huesped, fill = tipo_huesped)) +
+g5 <- ggplot(datos, aes(x = tipo_huesped, fill = tipo_huesped)) +
   geom_bar() +
   geom_text(stat = "count", aes(label = after_stat(count)), vjust = -0.5) +
   labs(title = "Reservas que incluyen niños y/o bebés",
        x = "Tipo de reserva", y = "Número de Reservas") +
   theme_minimal() +
-  scale_fill_manual(values = c("Con niños/bebés" = "darkgreen", "Solo adultos" = "gray70"))
-
-# También por hotel
-ggplot(datos, aes(x = hotel, fill = tipo_huesped)) +
-  geom_bar(position = "dodge") +
-  labs(title = "Reservas con niños/bebés por tipo de hotel",
-       x = "Tipo de Hotel", y = "Número de Reservas") +
-  theme_minimal()
-
-# Hallazgo: La mayoría de reservas son solo adultos. City Hotel tiene más reservas familiares.
+  scale_fill_manual(values = c("Con niños/bebés" = "darkgreen",
+                               "Solo adultos" = "gray70"))
+g5
+# Hallazgo: La mayoría de reservas son de solo adultos.
 ```
 
 ![Grafico pregunta5](Grafica_Pregunta_5.png "Pregunta5")
@@ -657,15 +660,15 @@ ggplot(datos, aes(x = hotel, fill = tipo_huesped)) +
   
 - ¿Es importante contar con espacios de estacionamiento?
 
-```
+``` r
 datos$parking_label <- factor(datos$parking_w,
-                              levels = c(0, 1, 2),
-                              labels = c("0 espacios", "1 espacio", "2 espacios"))
+                              levels = c(0, 1),
+                              labels = c("0 espacios", "1 espacio"))
 
 parking_tab <- as.data.frame(prop.table(table(datos$parking_label)) * 100)
 names(parking_tab) <- c("Parking", "Porcentaje")
 
-ggplot(parking_tab, aes(x = "", y = Porcentaje, fill = Parking)) +
+g6 <- ggplot(parking_tab, aes(x = "", y = Porcentaje, fill = Parking)) +
   geom_bar(stat = "identity", width = 1) +
   coord_polar("y", start = 0) +
   geom_text(aes(label = paste0(round(Porcentaje, 1), "%")),
@@ -675,8 +678,10 @@ ggplot(parking_tab, aes(x = "", y = Porcentaje, fill = Parking)) +
        fill = "Espacios requeridos") +
   theme_void() +
   theme(legend.position = "right")
+g6
 
-# Hallazgo: La gran mayoría de reservas NO requiere estacionamiento (< 5% pide 1 o más).
+# Hallazgo: La mayoria de hospedados no piden estacionamiento, pero como aun
+# >5% lo piden, es relevante
 
 
 ```
@@ -687,7 +692,7 @@ ggplot(parking_tab, aes(x = "", y = Porcentaje, fill = Parking)) +
 
 - ¿En qué meses del año se producen más cancelaciones de reservas?
 
-```
+``` r
 cancelaciones_mes <- datos %>%
   group_by(mes_llegada) %>%
   summarise(total = n(),
@@ -698,7 +703,7 @@ cancelaciones_mes <- datos %>%
 # Coeficiente para escalar la línea a la magnitud de las barras
 escala <- max(cancelaciones_mes$cancel) / max(cancelaciones_mes$tasa)
 
-g7<-ggplot(cancelaciones_mes, aes(x = mes_llegada)) +
+g7 <- ggplot(cancelaciones_mes, aes(x = mes_llegada)) +
   geom_col(aes(y = cancel, fill = "Cancelaciones"), alpha = 0.85) +
   geom_line(aes(y = tasa * escala, color = "Tasa de cancelación", group = 1),
             linewidth = 1.2) +
@@ -715,9 +720,10 @@ g7<-ggplot(cancelaciones_mes, aes(x = mes_llegada)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = "bottom")
 
-g3_2+g7
-# Hallazgo: Julio y Agosto tienen más cancelaciones en volumen, pero la tasa es más alta 
-# en meses de baja demanda.
+
+
+# Hallazgo: Julio y Agosto tienen más cancelaciones en volumen y en tasa, pero
+# Diciembre tiene una tasa de cancelacion mas alta que sus vecinos
 
 
 ```
@@ -726,31 +732,46 @@ g3_2+g7
 
 
 
-- Plantear una pregunta del equipo
+- Plantear una pregunta del equipo:
+ 
+- ¿Cómo afecta el tiempo entre la reserva y la llegada a la probabilidad de cancelación?
 
-```
-¿Cómo afecta el tiempo entre la reserva y la llegada a la probabilidad de cancelación? ---
-
+```r
 # Gráfico de líneas: tasa de cancelación por intervalo de lead time
+datos$lead_cat <- cut(datos$lead_time_w,
+                      breaks = c(0, 7, 30, 90, 180, 365, Inf),
+                      labels = c("0-7 d", "8-30 d", "31-90 d",
+                                 "91-180 d", "181-365 d", ">365 d"),
+                      include.lowest = TRUE,
+                      include.highest = TRUE)
+
+tasa_lead <- datos %>%
+  group_by(lead_cat) %>%
+  summarise(tasa_cancel = mean(is_canceled == 1) * 100, .groups = "drop")
+
 tasa_global <- mean(datos$is_canceled == 1) * 100
 
-ggplot(tasa_lead, aes(x = lead_cat, y = tasa_cancel, group = 1)) +
+max_tasa <- max(tasa_lead$tasa_cancel)
+
+g8 <- ggplot(tasa_lead, aes(x = lead_cat, y = tasa_cancel, group = 1)) +
   geom_line(color = "steelblue", linewidth = 1) +
   geom_point(color = "steelblue", size = 3) +
   geom_text(aes(label = paste0(round(tasa_cancel, 1), "%")), vjust = -1) +
   geom_hline(yintercept = tasa_global, linetype = "dashed", color = "red") +
-  annotate("text", x = 1, y = tasa_global + 1.5, 
-           label = paste0("Tasa global: ", round(tasa_global,1), "%"), 
+  annotate("text", x = 1, y = tasa_global + 1.5,
+           label = paste0("Tasa global: ", round(tasa_global, 1), "%"),
            color = "red") +
+  coord_cartesian(ylim = c(0, max_tasa * 1.1)) +
   labs(title = "Probabilidad de cancelación según anticipación de reserva",
        x = "Tiempo entre reserva y llegada", y = "Tasa de cancelación (%)") +
   theme_minimal()
+g8
 
 # Hallazgo: Las reservas canceladas tienen un lead_time significativamente mayor. 
 # Reservar con mucha anticipación aumenta el riesgo de cancelación.
 
 ```
-![Grafico pregunta8](Grafica_Pregunta_8.png "Pregunta8")
+![Grafico pregunta planteada](Grafica_Pregunta_Planteada.png "Pregunta planteada")
 
 
 
