@@ -71,8 +71,9 @@ datos$mes_num <- meses[datos$arrival_date_month]
 # Crear fecha de llegada como Date
 datos$fecha_llegada <- as.Date(paste(datos$arrival_date_year,
                                      datos$mes_num,
-                                     datos$arrival_date_day_of_month, sep="-"),
-                               format="%Y-%m-%d")
+                                     datos$arrival_date_day_of_month,
+                                     sep = "-"),
+                               format = "%Y-%m-%d")
 
 # Crear fecha de reserva (fecha_llegada - lead_time)
 datos$fecha_reserva <- datos$fecha_llegada - datos$lead_time
@@ -145,7 +146,7 @@ ggplot(datos, aes(x = as.factor(required_car_parking_spaces))) +
   theme_minimal()
 
 # Boxplot de adr (Average Daily Rate)
-boxplot(datos$adr, main = "ADR (Tarifa Diaria Promedio)", ylab="ADR")
+boxplot(datos$adr, main = "ADR (Tarifa Diaria Promedio)", ylab = "ADR")
 
 # Boxplot de estancia_total
 boxplot(datos$estancia_total, main = "Estancia Total (noches)", ylab = "Noches")
@@ -170,13 +171,13 @@ datos$parking_w <- pmin(datos$required_car_parking_spaces, 1)
 
 # --- Visualizacion de datos corregidos ---
 # Boxplot de lead_time_w
-boxplot(datos$lead_time_w, main="Lead Time", ylab="Días")
+boxplot(datos$lead_time_w, main = "Lead Time", ylab = "Días")
 
 # Boxplot de adr_w (Average Daily Rate)
-boxplot(datos$adr_w, main="ADR (Tarifa Diaria Promedio)", ylab="ADR")
+boxplot(datos$adr_w, main = "ADR (Tarifa Diaria Promedio)", ylab = "ADR")
 
 # Boxplot de estancia_w
-boxplot(datos$estancia_w, main="Estancia Total (noches)", ylab="Noches")
+boxplot(datos$estancia_w, main = "Estancia Total (noches)", ylab = "Noches")
 
 # Verificar la nueva distribución de parking
 cat("Distribución original:\n")
@@ -245,7 +246,7 @@ media <- mean(demanda_por_mes$total_reservas)
 desv <- sd(demanda_por_mes$total_reservas)
 
 # Usamos umbrales ajustados para visualizar temporadas contiguas
-umbral_alta <- media + 0.6 * desv 
+umbral_alta <- media + 0.6 * desv
 umbral_baja <- media - 0.5 * desv
 
 # Clasificar
@@ -272,9 +273,9 @@ g3 <- ggplot(demanda_por_mes, aes(x = mes_llegada,
              linetype = "dashed",
              color = "blue",
              linewidth = 1) +
-  annotate("text", x = 12, y = umbral_alta + 100, 
+  annotate("text", x = 12, y = umbral_alta + 100,
            label = "Umbral alta", color = "red") +
-  annotate("text", x = 12, y = umbral_baja - 100, 
+  annotate("text", x = 12, y = umbral_baja - 100,
            label = "Umbral baja", color = "blue") +
   labs(title = "Temporadas de reservas (clasificación numérica)",
        x = "Mes de llegada", y = "Total de reservas") +
@@ -294,7 +295,7 @@ g3
 
 # Calcular promedio de estancia total por hotel
 # (datos no cancelados para estancia real)
-estancia_promedio <- aggregate(estancia_total ~ hotel, 
+estancia_promedio <- aggregate(estancia_total ~ hotel,
                                data = reservas_no_canceladas, FUN = mean)
 
 g4 <- ggplot(estancia_promedio,
@@ -316,10 +317,10 @@ g4
 # --- PREGUNTA 5: ¿Cuántas reservas incluyen niños y/o bebés? ---
 
 # Crear variable categórica
-datos$tipo_huesped <- ifelse(datos$children > 0 | datos$babies > 0, 
+datos$tipo_huesped <- ifelse(datos$children > 0 | datos$babies > 0,
                              "Con niños/bebés", "Solo adultos")
 
-g5<-ggplot(datos, aes(x = tipo_huesped, fill = tipo_huesped)) +
+g5 <- ggplot(datos, aes(x = tipo_huesped, fill = tipo_huesped)) +
   geom_bar() +
   geom_text(stat = "count", aes(label = after_stat(count)), vjust = -0.5) +
   labs(title = "Reservas que incluyen niños y/o bebés",
@@ -340,7 +341,7 @@ datos$parking_label <- factor(datos$parking_w,
 parking_tab <- as.data.frame(prop.table(table(datos$parking_label)) * 100)
 names(parking_tab) <- c("Parking", "Porcentaje")
 
-g6<-ggplot(parking_tab, aes(x = "", y = Porcentaje, fill = Parking)) +
+g6 <- ggplot(parking_tab, aes(x = "", y = Porcentaje, fill = Parking)) +
   geom_bar(stat = "identity", width = 1) +
   coord_polar("y", start = 0) +
   geom_text(aes(label = paste0(round(Porcentaje, 1), "%")),
@@ -413,13 +414,13 @@ tasa_global <- mean(datos$is_canceled == 1) * 100
 
 max_tasa <- max(tasa_lead$tasa_cancel)
 
-g8<-ggplot(tasa_lead, aes(x = lead_cat, y = tasa_cancel, group = 1)) +
+g8 <- ggplot(tasa_lead, aes(x = lead_cat, y = tasa_cancel, group = 1)) +
   geom_line(color = "steelblue", linewidth = 1) +
   geom_point(color = "steelblue", size = 3) +
   geom_text(aes(label = paste0(round(tasa_cancel, 1), "%")), vjust = -1) +
   geom_hline(yintercept = tasa_global, linetype = "dashed", color = "red") +
-  annotate("text", x = 1, y = tasa_global + 1.5, 
-           label = paste0("Tasa global: ", round(tasa_global,1), "%"), 
+  annotate("text", x = 1, y = tasa_global + 1.5,
+           label = paste0("Tasa global: ", round(tasa_global, 1), "%"),
            color = "red") +
   coord_cartesian(ylim = c(0, max_tasa * 1.1)) +
   labs(title = "Probabilidad de cancelación según anticipación de reserva",
@@ -449,7 +450,7 @@ descripcion_variables <- data.frame(
                "adr", "required_car_parking_spaces",
                "total_of_special_requests",
                "reservation_status", "reservation_status_date"),
-  Tipo = c("Categórico", "Categórico (0/1)", "Numérico", "Numérico", 
+  Tipo = c("Categórico", "Categórico (0/1)", "Numérico", "Numérico",
            "Categórico", "Numérico", "Numérico", "Numérico", "Numérico",
            "Numérico", "Numérico", "Numérico", "Categórico", "Categórico",
            "Categórico", "Categórico", "Categórico (0/1)", "Numérico",
