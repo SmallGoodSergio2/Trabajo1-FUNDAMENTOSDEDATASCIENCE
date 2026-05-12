@@ -22,7 +22,6 @@ library(patchwork)
 # PASO 2a: CARGAR DATOS
 # ============================================================
 # Cargar el archivo CSV asegurando que las cadenas no se conviertan a factores
-#setwd("D:/UPC/Fundamentos de Data Science/datasets")
 datos <- read.csv("hotel_bookings.csv", header = TRUE, stringsAsFactors = FALSE, sep=',')
 
 # ============================================================
@@ -409,7 +408,6 @@ descripcion_variables <- data.frame(
                   "Fecha del último estado de reserva")
 )
 
-print(descripcion_variables)
 View(descripcion_variables)
 
 write.csv(datos, "hotel_bookings_despues.csv", row.names = FALSE)
