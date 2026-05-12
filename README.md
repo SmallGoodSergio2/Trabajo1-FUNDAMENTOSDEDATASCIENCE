@@ -48,8 +48,6 @@ Este análisis responde problemas o necesidades como:
 
 ```r
 
-
-
 df <- read.csv("hotel_bookings.csv") # asignando al data frame el contenido del archivo csv
 
 colnames(df) # Ver el nombre de las columnas
@@ -401,8 +399,10 @@ lead_time      stays_in_weekend_nights stays_in_week_nights     adults          
 # children: asumimos que NA significa sin niños (0)
 datos$children[is.na(datos$children)] <- 0
 
-# agent y company: tienen muchos NA, se mantienen como están (no se usarán en análisis principales)
-# Para variables numéricas con pocos NA se podría usar la mediana, pero aquí no profundizamos.
+datos$agent <- NA
+datos$company <- NA
+
+# agent y company: tienen muchos NA, se eliminan por no ser importantes
 
 
 ```
@@ -417,7 +417,7 @@ boxplot(datos$lead_time, main="Lead Time", ylab="Días")
 
 ```
 ![Boxplot Lead Time](boxplotLeadTime.png "BoxplotLead")
-```
+``` r
 # Boxplot de adr (Average Daily Rate)
 boxplot(datos$adr, main="ADR (Tarifa Diaria Promedio)", ylab="ADR")
 
@@ -427,7 +427,7 @@ boxplot(datos$adr, main="ADR (Tarifa Diaria Promedio)", ylab="ADR")
 
 
 
-```
+``` r
 # Boxplot de estancia_total
 boxplot(datos$estancia_total, main="Estancia Total (noches)", ylab="Noches")
 
@@ -435,7 +435,7 @@ boxplot(datos$estancia_total, main="Estancia Total (noches)", ylab="Noches")
 ```
 ![Boxplot EstanciaTotal](Estancia_totalboxplot.png "EstanciaTotalBoxplot")
 
-```
+``` r
 
 #### Tratamientos de Outliers
 
@@ -456,8 +456,8 @@ datos$estancia_w <- winsorize(datos$estancia_total)
 
 # --- Tratamiento manual ---
 
-# Como queremos tratar a 2 como un valor razonable, truncamos a 2 manualmente
-datos$parking_w <- pmin(datos$required_car_parking_spaces, 2)
+# Truncamos a 1
+datos$parking_w <- pmin(datos$required_car_parking_spaces, 1)
 
 
 
@@ -465,7 +465,7 @@ datos$parking_w <- pmin(datos$required_car_parking_spaces, 2)
 
 #### Visualización de datos corregidos
 
-```
+``` r
 
 # Boxplot de lead_time_w
 boxplot(datos$lead_time_w, main="Lead Time", ylab="Días")
@@ -473,7 +473,7 @@ boxplot(datos$lead_time_w, main="Lead Time", ylab="Días")
 ```
 ![Boxplot Lead Time](boxplotLeadTime_modificado.png "BoxplotLead_modificado")
 
-```
+``` r
 # Boxplot de adr_w (Average Daily Rate)
 boxplot(datos$adr_w, main="ADR (Tarifa Diaria Promedio)", ylab="ADR")
 
@@ -481,13 +481,13 @@ boxplot(datos$adr_w, main="ADR (Tarifa Diaria Promedio)", ylab="ADR")
 ```
 ![Boxplot ADR](AverageDailyRateBoxplot_modificado.png "BOXPLOTADR_modificado")
 
-```
+``` r
 # Boxplot de estancia_w
 boxplot(datos$estancia_w, main="Estancia Total (noches)", ylab="Noches")
 
 ```
 
-![Boxplot EstanciaTotal](Estancia_totalboxplot_modificado.png "EstanciaTotalBoxplot_modificado")
+![Boxplot EstanciaTotal](EstanciaTotalBoxplot_modificado.png "EstanciaTotalBoxplot_modificado")
 
 
 
