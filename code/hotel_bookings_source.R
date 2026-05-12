@@ -397,7 +397,6 @@ g7 <- ggplot(cancelaciones_mes, aes(x = mes_llegada)) +
 # a la probabilidad de cancelación? ---
 
 # Gráfico de líneas: tasa de cancelación por intervalo de lead time
-summary(datos$lead_cat)
 
 datos$lead_cat <- cut(datos$lead_time_w,
                       breaks = c(0, 7, 30, 90, 180, 365, Inf),
