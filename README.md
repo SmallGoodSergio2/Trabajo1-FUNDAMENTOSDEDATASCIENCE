@@ -56,52 +56,42 @@ sapply(df) # Ver el tipo de cada variable
 
 ```
 
+```md
 | Variable | Tipo | Descripción |
 |---|---|---|
-| hotel | Factor (Categórica) | Tipo de hotel (Resort Hotel o City Hotel) |
-| is_canceled | Factor binario | Indica si la reserva fue cancelada (1) o no (0) |
-| lead_time | Integer | Número de días entre la reserva y la llegada |
-| arrival_date_year | Integer | Año de llegada |
-| arrival_date_month | Character | Mes de llegada |
-| arrival_date_week_number | Integer | Semana del año de llegada |
-| arrival_date_day_of_month | Integer | Día del mes de llegada |
-| stays_in_weekend_nights | Integer | Número de noches de fin de semana |
-| stays_in_week_nights | Integer | Número de noches entre semana |
-| adults | Integer | Número de adultos |
-| children | Integer | Número de niños |
-| babies | Integer | Número de bebés |
-| meal | Factor (Categórica) | Tipo de comida contratada |
-| country | Factor (Categórica) | País de origen del cliente |
-| market_segment | Factor (Categórica) | Segmento de mercado |
-| distribution_channel | Factor (Categórica) | Canal de distribución |
-| is_repeated_guest | Integer | Indica si el huésped es recurrente |
-| previous_cancellations | Integer | Número de cancelaciones previas |
-| previous_bookings_not_canceled | Integer | Número de reservas previas no canceladas |
-| reserved_room_type | Factor (Categórica) | Tipo de habitación reservada |
-| assigned_room_type | Factor (Categórica) | Tipo de habitación asignada |
-| booking_changes | Integer | Número de cambios realizados en la reserva |
-| deposit_type | Factor (Categórica) | Tipo de depósito realizado |
-| agent | Character | Identificador de agencia de viajes |
-| company | Character | Identificador de empresa |
-| days_in_waiting_list | Integer | Días en lista de espera |
-| customer_type | Factor (Categórica) | Tipo de cliente |
-| adr | Numeric | Tarifa diaria promedio (Average Daily Rate) |
-| required_car_parking_spaces | Integer | Espacios de estacionamiento requeridos |
-| total_of_special_requests | Integer | Número de solicitudes especiales |
-| reservation_status | Factor (Categórica) | Estado final de la reserva |
-| reservation_status_date | Character | Fecha del último estado de reserva |
-| mes_num | Numeric | Número correspondiente al mes de llegada |
-| fecha_llegada | Date | Fecha completa de llegada |
-| fecha_reserva | Date | Fecha en que se realizó la reserva |
-| mes_llegada | Factor ordenado | Mes de llegada ordenado cronológicamente |
-| anio_mes | Character | Año y mes de llegada en formato YYYY-MM |
-| estancia_total | Numeric | Total de noches de estancia |
-| lead_time_w | Numeric | Lead time corregido mediante winsorización |
-| adr_w | Numeric | ADR corregido mediante winsorización |
-| estancia_w | Numeric | Estancia total corregida mediante winsorización |
-| parking_w | Numeric | Espacios de estacionamiento truncados a máximo 2 |
-| tipo_huesped | Character | Clasificación de la reserva según incluya niños/bebés |
-| parking_label | Factor (Categórica) | Etiqueta categórica de espacios de estacionamiento |
+| hotel | character | Tipo de hotel reservado |
+| is_canceled | integer | Indica si la reserva fue cancelada (1 = sí, 0 = no) |
+| lead_time | integer | Número de días entre la reserva y la llegada |
+| arrival_date_year | integer | Año de llegada |
+| arrival_date_month | character | Mes de llegada |
+| arrival_date_week_number | integer | Número de semana del año de llegada |
+| arrival_date_day_of_month | integer | Día del mes de llegada |
+| stays_in_weekend_nights | integer | Número de noches de fin de semana |
+| stays_in_week_nights | integer | Número de noches entre semana |
+| adults | integer | Número de adultos |
+| children | integer | Número de niños |
+| babies | integer | Número de bebés |
+| meal | character | Tipo de comida reservada |
+| country | character | País de procedencia del cliente |
+| market_segment | character | Segmento de mercado |
+| distribution_channel | character | Canal de distribución de la reserva |
+| is_repeated_guest | integer | Indica si el cliente es recurrente |
+| previous_cancellations | integer | Número de cancelaciones previas |
+| previous_bookings_not_canceled | integer | Número de reservas previas no canceladas |
+| reserved_room_type | character | Tipo de habitación reservada |
+| assigned_room_type | character | Tipo de habitación asignada |
+| booking_changes | integer | Número de cambios realizados en la reserva |
+| deposit_type | character | Tipo de depósito realizado |
+| agent | character | Código del agente de reservas |
+| company | character | Código de la empresa asociada |
+| days_in_waiting_list | integer | Días en lista de espera |
+| customer_type | character | Tipo de cliente |
+| adr | numeric | Tarifa diaria promedio |
+| required_car_parking_spaces | integer | Espacios de estacionamiento requeridos |
+| total_of_special_requests | integer | Número total de solicitudes especiales |
+| reservation_status | character | Estado final de la reserva |
+| reservation_status_date | character | Fecha del estado final de la reserva |
+```
 
 
 
