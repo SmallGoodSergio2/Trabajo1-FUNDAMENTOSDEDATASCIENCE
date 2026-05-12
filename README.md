@@ -43,11 +43,9 @@ Para este trabajo se usará una versión modificada de esta base de datos donde 
 #### Descripción del dataset
 
 ```r
-
-print("hola")
-
-df <- read.csv("hotel_bookings.csv")
+df<-read.csv("hotel_bookings.csv", header=TRUE, stringsAsFactors=FALSE, sep=',')
 head(df)
+summary(df)
 View(df)
 
 ```
