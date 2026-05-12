@@ -4,7 +4,7 @@
 Estudiantes: 
 - u202311021 Saavedra Cervera Sergio Andres
 - u          David Angelo Zavala Arteaga
-- u          Martin Alonso Del Aguila Arevalo
+- u202014659 Martin Alonso Del Aguila Arevalo
 
 
 
