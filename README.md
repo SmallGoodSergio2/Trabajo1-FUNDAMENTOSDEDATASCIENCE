@@ -423,7 +423,7 @@ boxplot(datos$adr, main="ADR (Tarifa Diaria Promedio)", ylab="ADR")
 
 
 ```
-![Boxplot ADR](AverageDailyRateBoxplot.png "BOXPLOTADR")
+![Boxplot ADR](img/AverageDailyRateBoxplot.png "BOXPLOTADR")
 
 
 
@@ -433,7 +433,7 @@ boxplot(datos$estancia_total, main="Estancia Total (noches)", ylab="Noches")
 
 
 ```
-![Boxplot EstanciaTotal](Estancia_totalboxplot.png "EstanciaTotalBoxplot")
+![Boxplot EstanciaTotal](img/Estancia_totalboxplot.png "EstanciaTotalBoxplot")
 
 ``` r
 
@@ -471,7 +471,7 @@ datos$parking_w <- pmin(datos$required_car_parking_spaces, 1)
 boxplot(datos$lead_time_w, main="Lead Time", ylab="Días")
 
 ```
-![Boxplot Lead Time](boxplotLeadTime_modificado.png "BoxplotLead_modificado")
+![Boxplot Lead Time](img/boxplotLeadTime_modificado.png "BoxplotLead_modificado")
 
 ``` r
 # Boxplot de adr_w (Average Daily Rate)
@@ -479,7 +479,7 @@ boxplot(datos$adr_w, main="ADR (Tarifa Diaria Promedio)", ylab="ADR")
 
 
 ```
-![Boxplot ADR](AverageDailyRateBoxplot_modificado.png "BOXPLOTADR_modificado")
+![Boxplot ADR](img/AverageDailyRateBoxplot_modificado.png "BOXPLOTADR_modificado")
 
 ``` r
 # Boxplot de estancia_w
@@ -487,7 +487,7 @@ boxplot(datos$estancia_w, main="Estancia Total (noches)", ylab="Noches")
 
 ```
 
-![Boxplot EstanciaTotal](EstanciaTotalBoxplot_modificado.png "EstanciaTotalBoxplot_modificado")
+![Boxplot EstanciaTotal](img/EstanciaTotalBoxplot_modificado.png "EstanciaTotalBoxplot_modificado")
 
 
 
@@ -514,7 +514,7 @@ g1
 # (mayor número de reservas no canceladas).
 ```
 
-![Grafico pregunta1](Grafica_Pregunta_1.png "Pregunta1")
+![Grafico pregunta1](img/Grafica_Pregunta_1.png "Pregunta1")
 
 
 - ¿Está aumentando la demanda con el tiempo?
@@ -539,7 +539,7 @@ g2
 # con una baja alrededor de inicios del año 2017
 ```
 
-![Grafico pregunta2](Grafica_Pregunta_2.png "Pregunta2")
+![Grafico pregunta2](img/Grafica_Pregunta_2.png "Pregunta2")
 
 
 - ¿Cuáles son las temporadas de reservas (alta, media, baja)?
@@ -603,7 +603,7 @@ g3
 ```
 
 
-![Grafico pregunta3](Grafica_Pregunta_3.png "Pregunta3")
+![Grafico pregunta3](img/Grafica_Pregunta_3.png "Pregunta3")
 
 
 
@@ -631,7 +631,7 @@ g4
 # (~4.2 vs ~ 3.0 noches).
 ```
 
-![Grafico pregunta4](Grafica_Pregunta_4.png "Pregunta4")
+![Grafico pregunta4](img/Grafica_Pregunta_4.png "Pregunta4")
 
 
 
@@ -654,7 +654,7 @@ g5
 # Hallazgo: La mayoría de reservas son de solo adultos.
 ```
 
-![Grafico pregunta5](Grafica_Pregunta_5.png "Pregunta5")
+![Grafico pregunta5](img/Grafica_Pregunta_5.png "Pregunta5")
 
 
   
@@ -687,7 +687,7 @@ g6
 ```
 
 
-![Grafico pregunta6](Grafica_Pregunta_6.png "Pregunta6")
+![Grafico pregunta6](img/Grafica_Pregunta_6.png "Pregunta6")
 
 
 - ¿En qué meses del año se producen más cancelaciones de reservas?
@@ -728,7 +728,7 @@ g7 <- ggplot(cancelaciones_mes, aes(x = mes_llegada)) +
 
 ```
 
-![Grafico pregunta7](Grafica_Pregunta_7.png "Pregunta7")
+![Grafico pregunta7](img/Grafica_Pregunta_7.png "Pregunta7")
 
 
 
@@ -771,7 +771,7 @@ g8
 # Reservar con mucha anticipación aumenta el riesgo de cancelación.
 
 ```
-![Grafico pregunta planteada](Grafica_Pregunta_Planteada.png "Pregunta planteada")
+![Grafico pregunta planteada](img/Grafica_Pregunta_Planteada.png "Pregunta planteada")
 
 
 
