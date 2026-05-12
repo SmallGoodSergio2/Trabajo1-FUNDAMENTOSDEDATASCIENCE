@@ -819,6 +819,12 @@ Se encontraron diversas tendencias y patrones como:
 - La mayoría de personas que iban a los hoteles eran adultos.
 - La mayoría de reservas que se hicieorn NO fueron canceladas.
 - Las temporadas con mayores reservas fueron durante julio y agosto.
+- Las reservas canceladas tienen un tiempo adelantado significativamente mayor.
+- La gran mayoría de reservas NO requiere estacionamiento (< 5% pide 1 o más).
+- La mayoría de reservas son solo adultos. City Hotel tiene más reservas familiares.
+- Resort Hotel tiene estancias más largas en promedio (~4.2 vs ~ 3.0 noches).
+- Se observa una tendencia ligeramente creciente, con picos en verano.
+- El City Hotel es el más preferido (mayor número de reservas no canceladas).
 
 
 **¿Qué recomendaciones se pueden extraer a partir de los hallazgos?**
