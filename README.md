@@ -416,7 +416,7 @@ boxplot(datos$lead_time, main="Lead Time", ylab="Días")
 
 
 ```
-![Boxplot Lead Time](boxplotLeadTime.png "BoxplotLead")
+![Boxplot Lead Time](img/boxplotLeadTime.png "BoxplotLead")
 ``` r
 # Boxplot de adr (Average Daily Rate)
 boxplot(datos$adr, main="ADR (Tarifa Diaria Promedio)", ylab="ADR")
